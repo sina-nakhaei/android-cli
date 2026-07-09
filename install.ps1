@@ -20,7 +20,7 @@ Invoke-WebRequest -Uri $url -OutFile $zipPath -UseBasicParsing
 
 # 4. Clean extract directory to prevent file conflicts
 if (Test-Path $installDir) {
-    Remove-Item $installDir -Recurforce -Recurse -ErrorAction SilentlyContinue
+    Remove-Item $installDir -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 Write-Host "Extracting files..." -ForegroundColor Cyan
