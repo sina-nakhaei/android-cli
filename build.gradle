@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.github.ajalt.clikt:clikt:5.0.3")
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 
@@ -17,5 +18,5 @@ test {
     useJUnitPlatform()
 }
 kotlin {
-    jvmToolchain(22)
+    jvmToolchain(21)
 }
