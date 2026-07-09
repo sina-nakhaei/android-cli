@@ -15,4 +15,4 @@ A powerful Kotlin-based Command Line Interface (CLI) designed to streamline Andr
 Open PowerShell and run the following one-liner to download and install the CLI automatically:
 
 ```powershell
-irm [https://raw.githubusercontent.com/sina-nakhaei/android-cli/master/install.ps1](https://raw.githubusercontent.com/sina-nakhaei/android-cli/master/install.ps1) | iex
+irm https://raw.githubusercontent.com/sina-nakhaei/android-cli/master/install.ps1 | iex
