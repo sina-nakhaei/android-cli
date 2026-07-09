@@ -17,6 +17,7 @@ dependencies {
 
 application {
     mainClass = "com.github.sinanakhaei.MainKt"
+    applicationName = "android"
 }
 
 test {
