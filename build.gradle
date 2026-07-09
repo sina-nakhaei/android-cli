@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '2.1.0'
+    id 'application'
 }
 
 group = 'com.github.sinanakhaei'
@@ -12,6 +13,10 @@ repositories {
 dependencies {
     implementation("com.github.ajalt.clikt:clikt:5.0.3")
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+application {
+    mainClass = "com.github.sinanakhaei.MainKt"
 }
 
 test {
