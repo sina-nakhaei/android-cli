@@ -1,6 +1,8 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '2.1.0'
     id 'application'
+    // 1. Added the plugin to generate compile-time constants
+    id 'com.github.gmazzo.buildconfig' version '5.3.5'
 }
 
 group = 'com.github.sinanakhaei'
@@ -23,6 +25,27 @@ application {
 test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(21)
+}
+
+// 2. Helper function to read the latest Git tag from your repository
+def getGitVersion() {
+    try {
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags', '--abbrev=0'
+            standardOutput = stdout
+        }
+        return stdout.toString().trim().replaceFirst(/^v/, '')
+    } catch (Exception ignored) {
+        return "1.0.2" // Safe fallback version if no tags exist locally
+    }
+}
+
+// 3. Configure the plugin to inject the dynamic version variable
+buildConfig {
+    useKotlinOutput()
+    buildConfigField('String', 'APP_VERSION', "\"${getGitVersion()}\"")
 }
