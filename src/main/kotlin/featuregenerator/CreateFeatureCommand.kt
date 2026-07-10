@@ -8,14 +8,9 @@ class CreateFeatureCommand : CliktCommand(
     name = "create-feature"
 ) {
 
-    private val feature by argument()
+    private val feature by argument(help = "The name of the feature to generate (e.g., Auth)")
 
     override fun run() {
-        println("Creating $feature")
-
-        FeatureGenerator.create(
-            feature,
-            File(".")
-        )
+        FeatureGenerator.execute(feature)
     }
 }
