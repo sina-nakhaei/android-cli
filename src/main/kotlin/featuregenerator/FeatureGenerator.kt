@@ -69,7 +69,7 @@ object FeatureGenerator {
         // Presentation Layer (UiState goes strictly into the model subdirectory)
         write(File(presentationModel, "${featureName}UiState.kt"), uiState(modelPkg, featureName))
         write(File(presentation, "${featureName}ViewModel.kt"), viewModel(presentationPkg, modelPkg, featureName))
-        write(File(presentation, "${featureName}Screen.kt"), screen(presentationPkg, featureName))
+        write(File(presentation, "${featureName}Screen.kt"), screen(presentationPkg, modelPkg,featureName))
         write(File(presentation, "${featureName}Route.kt"), route(presentationPkg, featureName))
     }
 
@@ -114,11 +114,11 @@ object FeatureGenerator {
 
     private fun remoteDatasource(pkg: String, name: String) = "package $pkg\n\ninterface ${name}RemoteDatasource"
 
-    private fun remoteDatasourceImpl(pkg: String, name: String) = "package $pkg\n\nclass ${name}RemoteDatasourceImpl : ${name}RemoteDatasource"
+    private fun remoteDatasourceImpl(pkg: String, name: String) = "package $pkg\nimport javax.inject.Inject\nclass ${name}RemoteDatasourceImpl @Inject constructor(): ${name}RemoteDatasource"
 
     private fun localDatasource(pkg: String, name: String) = "package $pkg\n\ninterface ${name}LocalDatasource"
 
-    private fun localDatasourceImpl(pkg: String, name: String) = "package $pkg\n\nclass ${name}LocalDatasourceImpl : ${name}LocalDatasource"
+    private fun localDatasourceImpl(pkg: String, name: String) = "package $pkg\nimport javax.inject.Inject\nclass ${name}LocalDatasourceImpl @Inject constructor() : ${name}LocalDatasource"
 
     private fun uiState(pkg: String, name: String) = "package $pkg\n\ndata class ${name}UiState(\n    val isLoading: Boolean = false\n)"
 
@@ -128,8 +128,9 @@ package $pkg
 import $domPkg.${name}Repository
 import $remPkg.${name}RemoteDatasource
 import $locPkg.${name}LocalDatasource
+import javax.inject.Inject
 
-class ${name}RepositoryImpl(
+class ${name}RepositoryImpl @Inject constructor(
     private val remoteDatasource: ${name}RemoteDatasource,
     private val localDatasource: ${name}LocalDatasource,
 ) : ${name}Repository
@@ -140,17 +141,25 @@ package $pkg
 
 import androidx.lifecycle.ViewModel
 import $modelPkg.${name}UiState
+import javax.inject.Inject
+import dagger.hilt.android.lifecycle.HiltViewModel
 
-class ${name}ViewModel : ViewModel()
+@HiltViewModel
+class ${name}ViewModel @Inject constructor() : ViewModel()
 """.trimIndent()
 
-    private fun screen(pkg: String, name: String) = """
+    private fun screen(pkg: String, modelPkg: String, name: String) = """
 package $pkg
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import $modelPkg.${name}UiState
 
 @Composable
-fun ${name}Screen() {
+fun ${name}Screen(
+    uiState: ${name}UiState,
+    modifier: Modifier = Modifier,
+) {
 
 }
 """.trimIndent()
@@ -159,10 +168,20 @@ fun ${name}Screen() {
 package $pkg
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
-fun ${name}Route() {
-    ${name}Screen()
+fun ${name}Route(
+    viewModel: ${name}ViewModel,
+    modifier: Modifier = Modifier,
+) {
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    
+    ${name}Screen(
+    uiState = uiState,
+    modifier = modifier
+    )
 }
 """.trimIndent()
 }
