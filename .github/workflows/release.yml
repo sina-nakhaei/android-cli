@@ -14,17 +14,19 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0 # Crucial: Allows the buildconfig plugin to read your Git tags in CI
 
     - name: Set up JDK
       uses: actions/setup-java@v4
       with:
-        distribution: 'zulu' # You can change this to 'temurin' or 'oracle' if preferred
-        java-version: '17'   # Match your project's Java version
+        distribution: 'zulu'
+        java-version: '21'   # Updated to match your project's toolchain version
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
 
-    # Build the distribution zip using your Gradle distribution task
+    # Build the distribution zip using your Gradle task
     - name: Build with Gradle
       run: ./gradlew distZip
 
