@@ -20,6 +20,8 @@ dependencies {
 application {
     mainClass = "com.github.sinanakhaei.MainKt"
     applicationName = "android"
+
+    applicationDefaultJvmArgs = ["--enable-native-access=ALL-UNNAMED"]
 }
 
 test {
